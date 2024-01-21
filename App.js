@@ -41,7 +41,78 @@ export default function App() {
     setIsDecimal(false);
   }
 
-  const Calculate = () => {
+  const Calculate = (input) => {
+    if(!isNaN(input) && !isNaN(parseFloat(input))){
+      return input;
+    }
+
+        if(input.includes("×")){
+      const symbolIndex = input.indexOf("×");
+
+      let leftNum = input.substring(symbolIndex - 1, symbolIndex); 
+      let rightNum = input.substring(symbolIndex + 1, symbolIndex + 2);
+      
+      for(let i = symbolIndex - 2; ('0' <= input.charAt(i) && input.charAt(i) <= '9') || (input.charAt(i) == '.') || (i == -1); i--){
+        leftNum = input.charAt(i) + leftNum;
+      }
+
+      for(let i = symbolIndex + 2; ('0' <= input.charAt(i) && input.charAt(i) <= '9') || (input.charAt(i) == '.') || (i == input.length); i++){
+        rightNum += input.charAt(i);
+      }
+
+      return Calculate(((input.substring(0, symbolIndex - leftNum.length)).concat((Number(leftNum) * Number(rightNum)).toString())).concat(input.substring(symbolIndex + rightNum.length + 1, input.length)));
+    }
+
+    if(input.includes("÷")){
+      const symbolIndex = input.indexOf("÷");
+
+      let leftNum = input.substring(symbolIndex - 1, symbolIndex); 
+      let rightNum = input.substring(symbolIndex + 1, symbolIndex + 2);
+      
+      for(let i = symbolIndex - 2; ('0' <= input.charAt(i) && input.charAt(i) <= '9') || (input.charAt(i) == '.') || (i == -1); i--){
+        leftNum = input.charAt(i) + leftNum;
+      }
+
+      for(let i = symbolIndex + 2; ('0' <= input.charAt(i) && input.charAt(i) <= '9') || (input.charAt(i) == '.') || (i == input.length); i++){
+        rightNum += input.charAt(i);
+      }
+
+      return Calculate(((input.substring(0, symbolIndex - leftNum.length)).concat((Number(leftNum) / Number(rightNum)).toString())).concat(input.substring(symbolIndex + rightNum.length + 1, input.length)));
+    }
+
+    if(input.includes("+")){
+      const symbolIndex = input.indexOf("+");
+
+      let leftNum = input.substring(symbolIndex - 1, symbolIndex); 
+      let rightNum = input.substring(symbolIndex + 1, symbolIndex + 2);
+      
+      for(let i = symbolIndex - 2; ('0' <= input.charAt(i) && input.charAt(i) <= '9') || (input.charAt(i) == '.') || (i == -1); i--){
+        leftNum = input.charAt(i) + leftNum;
+      }
+
+      for(let i = symbolIndex + 2; ('0' <= input.charAt(i) && input.charAt(i) <= '9') || (input.charAt(i) == '.') || (i == input.length); i++){
+        rightNum += input.charAt(i);
+      }
+
+      return Calculate(((input.substring(0, symbolIndex - leftNum.length)).concat((Number(leftNum) + Number(rightNum)).toString())).concat(input.substring(symbolIndex + rightNum.length + 1, input.length)));
+    }
+
+    if(input.includes("-")){
+      const symbolIndex = input.indexOf("-");
+
+      let leftNum = input.substring(symbolIndex - 1, symbolIndex); 
+      let rightNum = input.substring(symbolIndex + 1, symbolIndex + 2);
+      
+      for(let i = symbolIndex - 2; ('0' <= input.charAt(i) && input.charAt(i) <= '9') || (input.charAt(i) == '.') || (i == -1); i--){
+        leftNum = input.charAt(i) + leftNum;
+      }
+
+      for(let i = symbolIndex + 2; ('0' <= input.charAt(i) && input.charAt(i) <= '9') || (input.charAt(i) == '.') || (i == input.length); i++){
+        rightNum += input.charAt(i);
+      }
+
+      return Calculate(((input.substring(0, symbolIndex - leftNum.length)).concat((Number(leftNum) * Number(rightNum)).toString())).concat(input.substring(symbolIndex + rightNum.length + 1, input.length)));
+    }
   }
 
   var [displayText, setDisplayText] = useState("0");
@@ -63,7 +134,7 @@ export default function App() {
         marginHorizontal: 15,
       }}>
 
-        <Text style={styles.displayText}>
+        <Text style={styles.displayText} adjustsFontSizeToFit={true} numberOfLines={1}>
           {displayText}
         </Text>
       </View>
@@ -139,7 +210,7 @@ export default function App() {
             <Pressable onPress={() => setDisplayText(AddToDisplayText(displayText, '.'))} style={styles.cell1} android_ripple={{ color: 'light grey' }}>
               <Text style={styles.cellText2}>.</Text>
             </Pressable>
-            <Pressable onPress={() => Calculate()} style={styles.cell2} android_ripple={{ color: 'light grey' }}>
+            <Pressable onPress={() => {setDisplayText(Calculate(displayText))}} style={styles.cell2} android_ripple={{ color: 'light grey' }}>
               <Text style={styles.cellText1}>=</Text>
             </Pressable>
           </View>
@@ -162,6 +233,7 @@ const styles = StyleSheet.create({
   displayText: {
     color: "white",
     fontSize: 60,
+    
   },
   row: {
     flexDirection: 'row',
